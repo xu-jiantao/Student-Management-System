@@ -131,3 +131,4 @@ python run.py
 ## 欢迎反馈与贡献
 如有任何建议、问题或功能需求，欢迎通过 Issue 或 Pull Request 交流。
 - 邮箱：xujiantao9510@gmail.com
+- QQ: 963345284
