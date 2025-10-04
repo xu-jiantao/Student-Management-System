@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}课程管理{% endblock %}
+{% block content %}
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h4 mb-0">课程管理</h1>
+    <a class="btn btn-primary" href="{{ url_for('courses.create_course') }}">新增课程</a>
+  </div>
+  <form class="row g-3 align-items-end mb-3" method="get">
+    <div class="col-md-4">
+      <label class="form-label" for="teacher_id">授课教师</label>
+      <select class="form-select" id="teacher_id" name="teacher_id">
+        <option value="">全部</option>
+        {% for teacher in teachers %}
+          <option value="{{ teacher.id }}" {% if teacher_id == teacher.id %}selected{% endif %}>{{ teacher.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-4">
+      <label class="form-label" for="class_id">所属班级</label>
+      <select class="form-select" id="class_id" name="class_id">
+        <option value="">全部</option>
+        {% for classroom in classes %}
+          <option value="{{ classroom.id }}" {% if class_id == classroom.id %}selected{% endif %}>{{ classroom.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-4">
+      <button type="submit" class="btn btn-outline-primary w-100">筛选</button>
+    </div>
+  </form>
+  <div class="row g-3">
+    {% for course in courses %}
+      <div class="col-md-4">
+        <div class="card shadow-sm h-100">
+          <div class="card-body">
+            <h2 class="h5"><a href="{{ url_for('courses.course_detail', course_id=course.id) }}">{{ course.name }}</a></h2>
+            <p class="text-muted mb-1">课程编号：{{ course.code }}</p>
+            <p class="text-muted mb-1">学分：{{ course.credit }}</p>
+            <p class="text-muted mb-1">授课教师：{{ course.teacher.name if course.teacher else '待定' }}</p>
+            <p class="text-muted">所属班级：{{ course.classroom.name if course.classroom else '无' }}</p>
+            <div class="d-flex gap-2">
+              <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('courses.edit_course', course_id=course.id) }}">编辑</a>
+              <a class="btn btn-sm btn-outline-primary" href="{{ url_for('courses.assign_students', course_id=course.id) }}">选课学生</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% else %}
+      <div class="col-12"><div class="alert alert-info">暂无课程信息</div></div>
+    {% endfor %}
+  </div>
+{% endblock %}

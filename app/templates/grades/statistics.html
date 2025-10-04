@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}成绩统计{% endblock %}
+{% block content %}
+  <h1 class="h4 mb-3">成绩统计分析</h1>
+  <div class="row g-4">
+    <div class="col-lg-6">
+      <div class="card shadow-sm h-100">
+        <div class="card-header">课程平均分</div>
+        <div class="card-body">
+          {% if course_stats %}
+            <div class="stat-list">
+              {% for name, avg, max_score in course_stats %}
+                {% set percent = (avg or 0) | round(1, 'floor') %}
+                <div class="stat-item">
+                  <div>
+                    <div class="label">{{ name }}</div>
+                    <div class="text-muted small">最高分 {{ max_score | default(0, true) | round(1, 'floor') }}</div>
+                  </div>
+                  <div class="w-100" style="padding: 0 1rem;">
+                    <div class="progress-bar">
+                      <span style="width: {{ percent }}%; background: var(--info);"></span>
+                    </div>
+                  </div>
+                  <div class="value">{{ '%.1f'|format(avg or 0) }}</div>
+                </div>
+              {% endfor %}
+            </div>
+          {% else %}
+            <div class="text-muted">暂无课程成绩数据</div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="card shadow-sm h-100">
+        <div class="card-header">班级平均分</div>
+        <div class="card-body">
+          {% if class_averages %}
+            <div class="stat-list">
+              {% for class_name, avg in class_averages %}
+                {% set percent = (avg or 0) | round(1, 'floor') %}
+                <div class="stat-item">
+                  <div class="label">{{ class_name }}</div>
+                  <div class="w-100" style="padding: 0 1rem;">
+                    <div class="progress-bar">
+                      <span style="width: {{ percent }}%; background: var(--success);"></span>
+                    </div>
+                  </div>
+                  <div class="value">{{ '%.1f'|format(avg or 0) }}</div>
+                </div>
+              {% endfor %}
+            </div>
+          {% else %}
+            <div class="text-muted">暂无班级统计数据</div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

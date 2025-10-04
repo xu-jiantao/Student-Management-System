@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}请假管理{% endblock %}
+{% block content %}
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h4 mb-0">请假管理</h1>
+    <a class="btn btn-primary" href="{{ url_for('attendance.create_leave_request') }}">提交请假申请</a>
+  </div>
+  <div class="card shadow-sm">
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead class="table-light">
+          <tr><th>学生</th><th>起止日期</th><th>事由</th><th>状态</th><th>审批人</th><th class="text-end">操作</th></tr>
+        </thead>
+        <tbody>
+          {% for leave in leaves %}
+            <tr>
+              <td>{{ leave.student.name }} ({{ leave.student.student_number }})</td>
+              <td>{{ leave.start_date }} 至 {{ leave.end_date }}</td>
+              <td>{{ leave.reason }}</td>
+              <td>{{ leave.status }}</td>
+              <td>{{ leave.approver.username if leave.approver else '-' }}</td>
+              <td class="text-end">
+                {% if current_user.has_permission('attendance.manage') and leave.status == 'pending' %}
+                  <form method="post" class="d-inline">
+                    <input type="hidden" name="request_id" value="{{ leave.id }}">
+                    <input type="hidden" name="action" value="approve">
+                    <button type="submit" class="btn btn-sm btn-outline-success">批准</button>
+                  </form>
+                  <form method="post" class="d-inline">
+                    <input type="hidden" name="request_id" value="{{ leave.id }}">
+                    <input type="hidden" name="action" value="reject">
+                    <button type="submit" class="btn btn-sm btn-outline-danger">驳回</button>
+                  </form>
+                {% endif %}
+              </td>
+            </tr>
+          {% else %}
+            <tr><td colspan="6" class="text-center text-muted py-4">暂无请假记录</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endblock %}

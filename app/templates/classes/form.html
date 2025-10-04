@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% set is_edit = classroom is defined %}
+{% block title %}{{ '编辑班级' if is_edit else '新建班级' }}{% endblock %}
+{% block content %}
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h4 mb-0">{{ '编辑班级' if is_edit else '新建班级' }}</h1>
+    <a class="btn btn-outline-secondary" href="{{ url_for('classes.list_classes') }}">返回</a>
+  </div>
+  <form method="post" class="row g-3">
+    <div class="col-md-6">
+      <label class="form-label" for="name">班级名称</label>
+      <input type="text" class="form-control" id="name" name="name" value="{{ classroom.name if is_edit else '' }}" required>
+    </div>
+    <div class="col-md-6">
+      <label class="form-label" for="grade_level">年级</label>
+      <input type="text" class="form-control" id="grade_level" name="grade_level" value="{{ classroom.grade_level if is_edit else '' }}">
+    </div>
+    <div class="col-md-6">
+      <label class="form-label" for="head_teacher_id">班主任</label>
+      <select class="form-select" id="head_teacher_id" name="head_teacher_id">
+        <option value="">未指定</option>
+        {% for teacher in teachers %}
+          <option value="{{ teacher.id }}" {% if is_edit and classroom.head_teacher_id == teacher.id %}selected{% endif %}>{{ teacher.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-12">
+      <label class="form-label" for="description">班级简介</label>
+      <textarea class="form-control" id="description" name="description" rows="3">{{ classroom.description if is_edit else '' }}</textarea>
+    </div>
+    <div class="col-12">
+      <button type="submit" class="btn btn-primary">保存</button>
+      <a class="btn btn-link" href="{{ url_for('classes.list_classes') }}">取消</a>
+    </div>
+  </form>
+{% endblock %}

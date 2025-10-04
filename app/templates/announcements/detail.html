@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}公告详情{% endblock %}
+{% block content %}
+  <article class="announcement-detail">
+    <header class="announcement-detail__header">
+      <div>
+        <h1 class="announcement-detail__title">{{ announcement.title }}</h1>
+        <div class="announcement-detail__meta">
+          <span>发布于 {{ announcement.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+          {% if announcement.author %}
+            <span>发布人 {{ announcement.author.username }}</span>
+          {% endif %}
+          <span>面向 {{ '全部用户' if announcement.target_roles == 'all' else announcement.target_roles }}</span>
+        </div>
+      </div>
+      {% if announcement.is_pinned %}
+        <span class="badge">置顶</span>
+      {% endif %}
+    </header>
+    <section class="announcement-detail__body">
+      {% if '<' in announcement.content %}
+        {{ announcement.content | safe }}
+      {% else %}
+        {{ announcement.content | replace('\n', '<br>') | safe }}
+      {% endif %}
+    </section>
+    <footer class="announcement-detail__footer">
+      <a class="btn btn-outline" href="{{ url_for('announcements.list_announcements') }}">返回公告列表</a>
+    </footer>
+  </article>
+{% endblock %}

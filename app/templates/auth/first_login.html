@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}首次登录修改密码{% endblock %}
+{% block guest_content %}
+  <div class="row justify-content-center">
+    <div class="col-md-5">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h1 class="h5 mb-3 text-center">首次登录需修改密码</h1>
+          <form method="post">
+            <div class="mb-3">
+              <label class="form-label" for="password">新密码</label>
+              <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="confirm_password">确认新密码</label>
+              <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">保存</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

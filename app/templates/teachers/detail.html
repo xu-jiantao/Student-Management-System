@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}教师详情{% endblock %}
+{% block content %}
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h4 mb-0">{{ teacher.name }}</h1>
+    <a class="btn btn-outline-secondary" href="{{ url_for('teachers.list_teachers') }}">返回</a>
+  </div>
+  <div class="row g-3">
+    <div class="col-md-6">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <p class="mb-1"><span class="text-muted">工号：</span>{{ teacher.employee_number }}</p>
+          <p class="mb-1"><span class="text-muted">性别：</span>{{ teacher.gender or '-' }}</p>
+          <p class="mb-1"><span class="text-muted">邮箱：</span>{{ teacher.email or '-' }}</p>
+          <p class="mb-1"><span class="text-muted">电话：</span>{{ teacher.phone or '-' }}</p>
+          <p class="mb-1"><span class="text-muted">职称：</span>{{ teacher.professional_title or '-' }}</p>
+          <p class="mb-0"><span class="text-muted">入职日期：</span>{{ teacher.hire_date.strftime('%Y-%m-%d') if teacher.hire_date else '-' }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card shadow-sm">
+        <div class="card-header">班主任班级</div>
+        <div class="card-body">
+          {% if classes %}
+            <ul class="list-group list-group-flush">
+              {% for classroom in classes %}
+                <li class="list-group-item">{{ classroom.name }}</li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <div class="text-muted">暂未负责班级</div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

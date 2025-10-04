@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}学生信息管理系统{% endblock %}</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_head %}{% endblock %}
+  </head>
+  <body class="{% if current_user.is_authenticated %}layout-auth{% else %}layout-guest{% endif %}">
+    {% if current_user.is_authenticated %}
+      <div class="layout-shell">
+        <aside class="sidebar" id="sidebar">
+          <div class="sidebar__brand">
+            <span class="sidebar__logo">校</span>
+            <div>
+              <div class="sidebar__title">学生信息管理</div>
+              <div class="sidebar__subtitle">Integrated Admin</div>
+            </div>
+          </div>
+          <nav class="sidebar__nav">
+            <ul>
+              {% for item in nav_menu %}
+                {% set is_active = (item.endpoint and request.endpoint == item.endpoint) %}
+                {% set child_active = false %}
+                {% if item.children %}
+                  {% for child in item.children %}
+                    {% if request.endpoint == child.endpoint %}
+                      {% set child_active = true %}
+                    {% endif %}
+                  {% endfor %}
+                {% endif %}
+                <li class="sidebar__item {% if item.children %}has-children{% endif %} {% if is_active or child_active %}active open{% endif %}">
+                  {% if item.children %}
+                    <button class="sidebar__link" type="button" data-submenu="submenu-{{ loop.index }}">
+                      <span class="sidebar__link-text">{{ item.label }}</span>
+                      <span class="sidebar__caret"></span>
+                    </button>
+                    <ul class="sidebar__submenu {% if child_active %}open{% endif %}" id="submenu-{{ loop.index }}">
+                      {% for child in item.children %}
+                        {% set is_child_active = (request.endpoint == child.endpoint) %}
+                        <li>
+                          <a class="sidebar__sublink {% if is_child_active %}active{% endif %}"
+                             href="{{ url_for(child.endpoint) }}{% if child.anchor %}#{{ child.anchor }}{% endif %}">
+                            {{ child.label }}
+                          </a>
+                        </li>
+                      {% endfor %}
+                    </ul>
+                  {% else %}
+                    <a class="sidebar__link {% if is_active %}active{% endif %}" href="{{ url_for(item.endpoint) }}">
+                      <span class="sidebar__link-text">{{ item.label }}</span>
+                    </a>
+                  {% endif %}
+                </li>
+              {% endfor %}
+            </ul>
+          </nav>
+          <div class="sidebar__footer"></div>
+        </aside>
+        <div class="content">
+          <header class="topbar">
+            <button class="topbar__toggle" id="sidebarToggle" type="button" aria-label="切换侧边栏"></button>
+            <div class="topbar__breadcrumbs">
+              {% block breadcrumbs %}{% endblock %}
+            </div>
+          <div class="topbar__actions">
+              <div class="topbar__user">
+                <button class="topbar__user-btn" type="button" id="userMenuToggle" aria-haspopup="true" aria-expanded="false">
+                  <span class="avatar-sm">{{ current_user.username[:1]|upper }}</span>
+                  <span class="topbar__user-name">{{ current_user.username }}</span>
+                  <span class="topbar__caret"></span>
+                </button>
+                <ul class="topbar__menu" id="userMenu">
+                  <li><span class="topbar__menu-role">角色：{{ current_user.roles|map(attribute='name')|list|join('、') or '普通用户' }}</span></li>
+                  <li><a href="{{ url_for('profile.info') }}">个人中心</a></li>
+                  <li><a href="{{ url_for('profile.messages') }}">我的消息</a></li>
+                  <li><a href="{{ url_for('auth.logout') }}">退出登录</a></li>
+                </ul>
+              </div>
+            </div>
+          </header>
+          <main class="content__main">
+            {% with messages = get_flashed_messages(with_categories=True) %}
+              {% if messages %}
+                <div class="flash-stack">
+                  {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}" role="alert">
+                      {{ message }}
+                    </div>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            {% endwith %}
+            {% block content %}{% endblock %}
+          </main>
+        </div>
+      </div>
+    {% else %}
+      <div class="guest-wrapper">
+        <header class="guest-header">
+          <a class="guest-brand" href="{{ url_for('dashboard.index') }}">学生信息管理系统</a>
+        </header>
+        <main class="guest-main">
+          {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+              <div class="flash-stack">
+                {% for category, message in messages %}
+                  <div class="alert alert-{{ category }}" role="alert">
+                    {{ message }}
+                  </div>
+                {% endfor %}
+              </div>
+            {% endif %}
+          {% endwith %}
+          {% block guest_content %}{% endblock %}
+        </main>
+      </div>
+    {% endif %}
+
+    <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
+    {% block extra_js %}{% endblock %}
+  </body>
+</html>

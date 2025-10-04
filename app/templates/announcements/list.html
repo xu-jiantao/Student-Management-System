@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}通知公告{% endblock %}
+{% block content %}
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h4 mb-0">通知公告</h1>
+    {% if current_user.has_permission('announcements.manage') %}
+      <a class="btn btn-primary" href="{{ url_for('announcements.create_announcement') }}">发布公告</a>
+    {% endif %}
+  </div>
+  <div class="list-group">
+    {% for announcement in announcements %}
+      <a class="list-group-item list-group-item-action" href="{{ url_for('announcements.announcement_detail', announcement_id=announcement.id) }}">
+        <div class="d-flex justify-content-between">
+          <h2 class="h6 mb-1">{% if announcement.is_pinned %}<span class="badge text-bg-warning me-2">置顶</span>{% endif %}{{ announcement.title }}</h2>
+          <small class="text-muted">{{ announcement.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+        </div>
+        <p class="mb-0 text-muted">{{ announcement.content[:120] }}{% if announcement.content|length > 120 %}...{% endif %}</p>
+      </a>
+    {% else %}
+      <div class="alert alert-info">暂无公告</div>
+    {% endfor %}
+  </div>
+{% endblock %}

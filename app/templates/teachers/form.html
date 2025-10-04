@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% set is_edit = teacher is defined %}
+{% block title %}{{ '编辑教师' if is_edit else '新增教师' }}{% endblock %}
+{% block content %}
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h4 mb-0">{{ '编辑教师' if is_edit else '新增教师' }}</h1>
+    <a class="btn btn-outline-secondary" href="{{ url_for('teachers.list_teachers') }}">返回</a>
+  </div>
+  <form method="post" class="row g-3">
+    <div class="col-md-4">
+      <label class="form-label" for="employee_number">工号</label>
+      <input type="text" class="form-control" id="employee_number" name="employee_number" value="{{ teacher.employee_number if is_edit else '' }}" required>
+    </div>
+    <div class="col-md-4">
+      <label class="form-label" for="name">姓名</label>
+      <input type="text" class="form-control" id="name" name="name" value="{{ teacher.name if is_edit else '' }}" required>
+    </div>
+    <div class="col-md-4">
+      <label class="form-label" for="gender">性别</label>
+      <select class="form-select" id="gender" name="gender">
+        <option value="">未填写</option>
+        <option value="男" {% if is_edit and teacher.gender == '男' %}selected{% endif %}>男</option>
+        <option value="女" {% if is_edit and teacher.gender == '女' %}selected{% endif %}>女</option>
+      </select>
+    </div>
+    <div class="col-md-6">
+      <label class="form-label" for="email">邮箱</label>
+      <input type="email" class="form-control" id="email" name="email" value="{{ teacher.email if is_edit else '' }}">
+    </div>
+    <div class="col-md-6">
+      <label class="form-label" for="phone">联系电话</label>
+      <input type="text" class="form-control" id="phone" name="phone" value="{{ teacher.phone if is_edit else '' }}">
+    </div>
+    <div class="col-md-6">
+      <label class="form-label" for="professional_title">职称</label>
+      <input type="text" class="form-control" id="professional_title" name="professional_title" value="{{ teacher.professional_title if is_edit else '' }}">
+    </div>
+    <div class="col-md-6">
+      <label class="form-label" for="hire_date">入职日期</label>
+      <input type="date" class="form-control" id="hire_date" name="hire_date" value="{{ teacher.hire_date.strftime('%Y-%m-%d') if is_edit and teacher.hire_date else '' }}">
+    </div>
+    <div class="col-12">
+      <button type="submit" class="btn btn-primary">保存</button>
+      <a class="btn btn-link" href="{{ url_for('teachers.list_teachers') }}">取消</a>
+    </div>
+  </form>
+{% endblock %}

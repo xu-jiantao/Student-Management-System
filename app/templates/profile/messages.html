@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}消息中心{% endblock %}
+{% block content %}
+  <div class="page-header">
+    <div>
+      <div class="page-title">我的消息</div>
+      <div class="page-subtitle">查看系统推送并及时处理重要通知。</div>
+    </div>
+  </div>
+  <div class="grid grid--two">
+    <section class="card">
+      <div class="card-header">未读消息</div>
+      <div class="card-body">
+        {% if unread %}
+          <ul class="message-list">
+            {% for message in unread %}
+              <li class="message-item">
+                <div class="message-item__header">
+                  <div>
+                    <div class="message-item__title">{{ message.title }}</div>
+                    <div class="message-item__meta">{{ message.created_at.strftime('%Y-%m-%d %H:%M') }}</div>
+                  </div>
+                  <form method="post">
+                    <input type="hidden" name="message_id" value="{{ message.id }}">
+                    <input type="hidden" name="action" value="mark_read">
+                    <button type="submit" class="btn btn-sm btn-outline">标记已读</button>
+                  </form>
+                </div>
+                <div class="message-item__body">{{ message.body }}</div>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <div class="empty-state">暂无未读消息</div>
+        {% endif %}
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-header">已读消息</div>
+      <div class="card-body">
+        {% if read %}
+          <ul class="message-list message-list--read">
+            {% for message in read %}
+              <li class="message-item is-read">
+                <div class="message-item__header">
+                  <div>
+                    <div class="message-item__title">{{ message.title }}</div>
+                    <div class="message-item__meta">{{ message.created_at.strftime('%Y-%m-%d %H:%M') }}</div>
+                  </div>
+                </div>
+                <div class="message-item__body">{{ message.body }}</div>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <div class="empty-state">暂无已读消息</div>
+        {% endif %}
+      </div>
+    </section>
+  </div>
+{% endblock %}

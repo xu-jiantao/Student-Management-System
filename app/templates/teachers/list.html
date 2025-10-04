@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}教师管理{% endblock %}
+{% block content %}
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h4 mb-0">教师管理</h1>
+    <a class="btn btn-primary" href="{{ url_for('teachers.create_teacher') }}">新增教师</a>
+  </div>
+  <div class="card shadow-sm">
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead class="table-light">
+          <tr><th>工号</th><th>姓名</th><th>性别</th><th>邮箱</th><th>电话</th><th>职称</th><th class="text-end">操作</th></tr>
+        </thead>
+        <tbody>
+          {% for teacher in teachers %}
+            <tr>
+              <td>{{ teacher.employee_number }}</td>
+              <td><a href="{{ url_for('teachers.teacher_detail', teacher_id=teacher.id) }}">{{ teacher.name }}</a></td>
+              <td>{{ teacher.gender or '-' }}</td>
+              <td>{{ teacher.email or '-' }}</td>
+              <td>{{ teacher.phone or '-' }}</td>
+              <td>{{ teacher.professional_title or '-' }}</td>
+              <td class="text-end">
+                <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('teachers.edit_teacher', teacher_id=teacher.id) }}">编辑</a>
+              </td>
+            </tr>
+          {% else %}
+            <tr><td colspan="7" class="text-center text-muted py-4">暂无教师信息</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endblock %}

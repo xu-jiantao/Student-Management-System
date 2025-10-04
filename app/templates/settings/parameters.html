@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}系统参数{% endblock %}
+{% block content %}
+  <h1 class="h4 mb-3">系统参数配置</h1>
+  <div class="row g-3">
+    <div class="col-md-6">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h2 class="h6">新增参数</h2>
+          <form method="post">
+            <div class="mb-3">
+              <label class="form-label" for="key">键</label>
+              <input type="text" class="form-control" id="key" name="key" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="value">值</label>
+              <input type="text" class="form-control" id="value" name="value">
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="description">描述</label>
+              <textarea class="form-control" id="description" name="description" rows="2"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">保存</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card shadow-sm h-100">
+        <div class="card-header">已有参数</div>
+        <div class="card-body">
+          {% if settings %}
+            <ul class="list-group list-group-flush">
+              {% for setting in settings %}
+                <li class="list-group-item">
+                  <div class="fw-bold">{{ setting.key }}</div>
+                  <div class="text-muted small">{{ setting.description or '无描述' }}</div>
+                  <div>值：{{ setting.value }}</div>
+                </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <div class="text-muted">暂无参数</div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

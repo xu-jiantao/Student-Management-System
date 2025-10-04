@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block title %}个人中心{% endblock %}
+{% block content %}
+  <div class="page-header">
+    <div>
+      <div class="page-title">个人中心</div>
+      <div class="page-subtitle">查看账号总览、更新联系方式并关注与你相关的任务与通知。</div>
+    </div>
+  </div>
+
+  <div class="grid grid--two">
+    <section class="card profile-card">
+      <div class="card-header">账号概览</div>
+      <div class="card-body profile-card__body">
+        <div class="profile-card__avatar">
+          {% if current_user.avatar_path %}
+            <img src="{{ url_for('static', filename=current_user.avatar_path) }}" alt="头像">
+          {% else %}
+            <span>{{ current_user.username[:1]|upper }}</span>
+          {% endif %}
+        </div>
+        <div class="profile-card__main">
+          <div class="profile-card__name">{{ current_user.username }}</div>
+          <div class="profile-card__role">{{ current_user.roles|map(attribute='name')|list|join('、') or '普通用户' }}</div>
+          <ul class="profile-meta">
+            <li><span>邮箱</span>{{ current_user.email or '未填写' }}</li>
+            <li><span>联系电话</span>{{ current_user.phone or '未填写' }}</li>
+            <li><span>上次登录</span>{{ current_user.last_login_at.strftime('%Y-%m-%d %H:%M') if current_user.last_login_at else '首次登录' }}</li>
+          </ul>
+        </div>
+      </div>
+      <div class="profile-stats">
+        <div class="profile-stat">
+          <div class="profile-stat__label">任务总数</div>
+          <div class="profile-stat__value">{{ total_todos }}</div>
+        </div>
+        <div class="profile-stat">
+          <div class="profile-stat__label">已完成</div>
+          <div class="profile-stat__value">{{ completed_todos }}</div>
+        </div>
+        <div class="profile-stat">
+          <div class="profile-stat__label">角色数量</div>
+          <div class="profile-stat__value">{{ current_user.roles|length }}</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-header">联系方式与头像</div>
+      <div class="card-body">
+        <form method="post" enctype="multipart/form-data" class="form-grid">
+          <div>
+            <label class="form-label" for="email">邮箱</label>
+            <input type="email" class="form-control" id="email" name="email" value="{{ current_user.email }}" placeholder="name@example.com">
+          </div>
+          <div>
+            <label class="form-label" for="phone">联系电话</label>
+            <input type="text" class="form-control" id="phone" name="phone" value="{{ current_user.phone or '' }}" placeholder="例如 138xxxxxxxx">
+          </div>
+          <div class="form-field-span">
+            <label class="form-label" for="avatar">上传头像</label>
+            <input type="file" class="form-control" id="avatar" name="avatar" accept="image/*">
+            <div class="form-text">支持 JPG/PNG，建议 400×400 像素以上。</div>
+          </div>
+          <div class="form-field-span">
+            <button type="submit" class="btn btn-primary">保存信息</button>
+            <a class="btn btn-link" href="{{ url_for('profile.change_password') }}">前往修改密码</a>
+          </div>
+        </form>
+      </div>
+    </section>
+  </div>
+
+  <div class="grid grid--two mt-3">
+    <section class="card">
+      <div class="card-header">我的待办</div>
+      <div class="card-body">
+        {% if recent_todos %}
+          <ul class="todo-list">
+            {% for todo in recent_todos %}
+              <li class="todo-item {% if todo.is_completed %}is-completed{% endif %}">
+                <div>
+                  <div class="todo-item__title">{{ todo.content }}</div>
+                  <div class="todo-item__meta">{{ todo.created_at.strftime('%Y-%m-%d %H:%M') }} 创建</div>
+                </div>
+                {% if todo.due_date %}
+                  <span class="badge">截止 {{ todo.due_date }}</span>
+                {% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <div class="empty-state">暂无待办事项，快去仪表盘添加吧。</div>
+        {% endif %}
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-header">相关公告</div>
+      <div class="card-body">
+        {% if recent_announcements %}
+          <ul class="announcement-list">
+            {% for announcement in recent_announcements %}
+              <li>
+                <a class="announcement-link" href="{{ url_for('announcements.announcement_detail', announcement_id=announcement.id) }}">
+                  <div class="announcement-title">{{ announcement.title }}</div>
+                  <div class="announcement-meta">{{ announcement.created_at.strftime('%Y-%m-%d %H:%M') }}</div>
+                  <div class="announcement-preview">{{ announcement.content[:80] }}{% if announcement.content|length > 80 %}...{% endif %}</div>
+                </a>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <div class="empty-state">暂无符合你角色的公告。</div>
+        {% endif %}
+      </div>
+    </section>
+  </div>
+{% endblock %}

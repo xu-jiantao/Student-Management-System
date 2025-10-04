@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}选课管理{% endblock %}
+{% block content %}
+  <h1 class="h4 mb-3">为 {{ course.name }} 选择学生</h1>
+  <form method="post">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <p class="text-muted">多选学生加入课程，未选中的学生将被移除。</p>
+        <select class="form-select" name="student_ids" multiple size="14">
+          {% for student in students %}
+            <option value="{{ student.id }}" {% if student in course.students %}selected{% endif %}>
+              {{ student.student_number }} - {{ student.name }} {% if student.classroom %}({{ student.classroom.name }}){% endif %}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="card-footer text-end">
+        <button type="submit" class="btn btn-primary">保存</button>
+        <a class="btn btn-link" href="{{ url_for('courses.course_detail', course_id=course.id) }}">取消</a>
+      </div>
+    </div>
+  </form>
+{% endblock %}

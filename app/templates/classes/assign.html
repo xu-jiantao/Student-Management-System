@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}分配学生{% endblock %}
+{% block content %}
+  <h1 class="h4 mb-3">为 {{ classroom.name }} 分配学生</h1>
+  <form method="post">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <p class="text-muted">按住 Ctrl/Command 可多选，已选择学生将被分配至当前班级。</p>
+        <select class="form-select" name="student_ids" multiple size="12">
+          {% for student in students %}
+            <option value="{{ student.id }}" {% if student.class_id == classroom.id %}selected{% endif %}>
+              {{ student.student_number }} - {{ student.name }} {% if student.classroom and student.classroom.id != classroom.id %}(当前：{{ student.classroom.name }}){% endif %}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="card-footer text-end">
+        <button type="submit" class="btn btn-primary">保存</button>
+        <a class="btn btn-link" href="{{ url_for('classes.class_detail', class_id=classroom.id) }}">取消</a>
+      </div>
+    </div>
+  </form>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}考勤统计{% endblock %}
+{% block content %}
+  <h1 class="h4 mb-3">考勤统计</h1>
+  <div class="row g-3">
+    <div class="col-md-4">
+      <div class="card shadow-sm">
+        <div class="card-header">总体统计</div>
+        <ul class="list-group list-group-flush">
+          {% for status, count in summary %}
+            <li class="list-group-item d-flex justify-content-between"><span>{{ status }}</span><span>{{ count }}</span></li>
+          {% else %}
+            <li class="list-group-item">暂无数据</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    <div class="col-md-8">
+      <div class="card shadow-sm">
+        <div class="card-header">班级出勤情况</div>
+        <div class="table-responsive">
+          <table class="table table-bordered mb-0">
+            <thead class="table-light">
+              <tr><th>班级</th><th>出勤</th><th>缺勤</th><th>请假</th></tr>
+            </thead>
+            <tbody>
+              {% for class_name, stat in class_stat_map.items() %}
+                <tr>
+                  <td>{{ class_name }}</td>
+                  <td>{{ stat.get('出勤', 0) }}</td>
+                  <td>{{ stat.get('缺勤', 0) }}</td>
+                  <td>{{ stat.get('请假', 0) }}</td>
+                </tr>
+              {% else %}
+                <tr><td colspan="4" class="text-center text-muted py-4">暂无数据</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

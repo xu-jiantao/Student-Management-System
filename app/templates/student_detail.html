@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}学生详情{% endblock %}
+{% block content %}
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">学生详情</h1>
+    <div>
+      <a class="btn btn-outline-secondary" href="{{ url_for('web.list_students') }}">返回列表</a>
+      <a class="btn btn-primary" href="{{ url_for('web.edit_student', student_id=student.id) }}">编辑</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-4">
+          <div class="text-muted">学号</div>
+          <div class="fw-bold">{{ student.student_number }}</div>
+        </div>
+        <div class="col-md-4">
+          <div class="text-muted">姓名</div>
+          <div class="fw-bold">{{ student.name }}</div>
+        </div>
+        <div class="col-md-4">
+          <div class="text-muted">性别</div>
+          <div class="fw-bold">{{ student.gender }}</div>
+        </div>
+        <div class="col-md-4">
+          <div class="text-muted">出生日期</div>
+          <div class="fw-bold">{{ student.date_of_birth.strftime('%Y-%m-%d') }}</div>
+        </div>
+        <div class="col-md-4">
+          <div class="text-muted">班级</div>
+          <div class="fw-bold">{{ student.class_name }}</div>
+        </div>
+        <div class="col-md-4">
+          <div class="text-muted">邮箱</div>
+          <div class="fw-bold">{{ student.email }}</div>
+        </div>
+        <div class="col-md-4">
+          <div class="text-muted">联系电话</div>
+          <div class="fw-bold">{{ student.phone }}</div>
+        </div>
+        <div class="col-12">
+          <div class="text-muted">联系地址</div>
+          <div class="fw-bold">{{ student.address or '暂无' }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

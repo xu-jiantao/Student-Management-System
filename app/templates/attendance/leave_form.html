@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}请假申请{% endblock %}
+{% block content %}
+  <h1 class="h4 mb-3">提交请假申请</h1>
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <form method="post" class="row g-3">
+        <div class="col-md-4">
+          <label class="form-label" for="start_date">开始日期</label>
+          <input type="date" class="form-control" id="start_date" name="start_date" required>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label" for="end_date">结束日期</label>
+          <input type="date" class="form-control" id="end_date" name="end_date" required>
+        </div>
+        <div class="col-12">
+          <label class="form-label" for="reason">请假事由</label>
+          <textarea class="form-control" id="reason" name="reason" rows="3" required></textarea>
+        </div>
+        <div class="col-12">
+          <button type="submit" class="btn btn-primary">提交</button>
+          <a class="btn btn-link" href="{{ url_for('attendance.leave_requests') }}">取消</a>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}

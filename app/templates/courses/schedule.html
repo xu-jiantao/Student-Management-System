@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}课表管理{% endblock %}
+{% block content %}
+  <h1 class="h4 mb-3">课程课表：{{ course.name }}</h1>
+  <div class="card shadow-sm mb-3">
+    <div class="card-body">
+      <form method="post" class="row g-3">
+        <input type="hidden" name="action" value="create">
+        <div class="col-md-3">
+          <label class="form-label" for="weekday">星期</label>
+          <select class="form-select" id="weekday" name="weekday" required>
+            {% for value,label in [(0,'周一'),(1,'周二'),(2,'周三'),(3,'周四'),(4,'周五'),(5,'周六'),(6,'周日')] %}
+              <option value="{{ value }}">{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label" for="start_time">开始时间</label>
+          <input type="time" class="form-control" id="start_time" name="start_time" required>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label" for="end_time">结束时间</label>
+          <input type="time" class="form-control" id="end_time" name="end_time" required>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label" for="location">地点</label>
+          <input type="text" class="form-control" id="location" name="location" placeholder="如：教学楼A-302">
+        </div>
+        <div class="col-12 text-end">
+          <button type="submit" class="btn btn-primary">添加</button>
+          <a class="btn btn-link" href="{{ url_for('courses.course_detail', course_id=course.id) }}">返回课程</a>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="card shadow-sm">
+    <div class="card-header">已有课表</div>
+    <div class="card-body">
+      {% if schedules %}
+        <ul class="list-group list-group-flush">
+          {% for schedule in schedules %}
+            <li class="list-group-item">周{{ ['一','二','三','四','五','六','日'][schedule.weekday] }} {{ schedule.start_time.strftime('%H:%M') }} - {{ schedule.end_time.strftime('%H:%M') }} {{ schedule.location or '' }}</li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <div class="text-muted">尚未设置课表</div>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

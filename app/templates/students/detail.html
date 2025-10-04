@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}学生详情{% endblock %}
+{% block content %}
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h4 mb-0">学生详情</h1>
+    <div>
+      <a class="btn btn-outline-secondary" href="{{ url_for('students.list_students') }}">返回列表</a>
+      <a class="btn btn-primary" href="{{ url_for('students.edit_student', student_id=student.id) }}">编辑</a>
+    </div>
+  </div>
+  <div class="row g-3">
+    <div class="col-md-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-body text-center">
+          {% if student.avatar_path %}
+            <img class="img-thumbnail mb-3" src="{{ url_for('static', filename=student.avatar_path) }}" alt="头像">
+          {% else %}
+            <div class="display-1 text-muted">👤</div>
+          {% endif %}
+          <h2 class="h5">{{ student.name }}</h2>
+          <div class="text-muted">{{ student.student_number }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-8">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="text-muted small">性别</div>
+              <div class="fw-bold">{{ student.gender }}</div>
+            </div>
+            <div class="col-md-6">
+              <div class="text-muted small">出生日期</div>
+              <div class="fw-bold">{{ student.date_of_birth.strftime('%Y-%m-%d') }}</div>
+            </div>
+            <div class="col-md-6">
+              <div class="text-muted small">班级</div>
+              <div class="fw-bold">{{ student.classroom.name if student.classroom else '未分班' }}</div>
+            </div>
+            <div class="col-md-6">
+              <div class="text-muted small">邮箱</div>
+              <div class="fw-bold">{{ student.email }}</div>
+            </div>
+            <div class="col-md-6">
+              <div class="text-muted small">联系电话</div>
+              <div class="fw-bold">{{ student.phone }}</div>
+            </div>
+            <div class="col-md-6">
+              <div class="text-muted small">监护人</div>
+              <div class="fw-bold">{{ student.guardian_name or '-' }} / {{ student.guardian_phone or '-' }}</div>
+            </div>
+            <div class="col-12">
+              <div class="text-muted small">联系地址</div>
+              <div class="fw-bold">{{ student.address or '暂无' }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

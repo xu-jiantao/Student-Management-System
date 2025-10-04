@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}学生列表{% endblock %}
+{% block content %}
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">学生列表</h1>
+    <a class="btn btn-success" href="{{ url_for('web.create_student') }}">新增学生</a>
+  </div>
+
+  <form class="row g-3 mb-3" method="get" action="{{ url_for('web.list_students') }}">
+    <div class="col-auto">
+      <input type="text" class="form-control" name="q" placeholder="按姓名/学号/班级搜索" value="{{ search_term }}">
+    </div>
+    <div class="col-auto">
+      <button type="submit" class="btn btn-outline-primary">搜索</button>
+    </div>
+  </form>
+
+  {% if students %}
+    <div class="table-responsive">
+      <table class="table table-striped align-middle">
+        <thead>
+          <tr>
+            <th scope="col">学号</th>
+            <th scope="col">姓名</th>
+            <th scope="col">性别</th>
+            <th scope="col">出生日期</th>
+            <th scope="col">班级</th>
+            <th scope="col">邮箱</th>
+            <th scope="col">联系电话</th>
+            <th scope="col" class="text-end">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for student in students %}
+            <tr>
+              <td>{{ student.student_number }}</td>
+              <td>
+                <a href="{{ url_for('web.student_detail', student_id=student.id) }}">{{ student.name }}</a>
+              </td>
+              <td>{{ student.gender }}</td>
+              <td>{{ student.date_of_birth.strftime('%Y-%m-%d') }}</td>
+              <td>{{ student.class_name }}</td>
+              <td>{{ student.email }}</td>
+              <td>{{ student.phone }}</td>
+              <td class="text-end">
+                <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('web.edit_student', student_id=student.id) }}">编辑</a>
+                <form class="d-inline" method="post" action="{{ url_for('web.delete_student', student_id=student.id) }}" onsubmit="return confirm('确认删除该学生信息？');">
+                  <button type="submit" class="btn btn-sm btn-outline-danger">删除</button>
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="alert alert-info">暂未找到学生信息，试试新增学生或更换搜索条件。</div>
+  {% endif %}
+{% endblock %}

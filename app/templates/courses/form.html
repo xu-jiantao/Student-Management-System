@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% set is_edit = course is defined %}
+{% block title %}{{ '编辑课程' if is_edit else '新增课程' }}{% endblock %}
+{% block content %}
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h4 mb-0">{{ '编辑课程' if is_edit else '新增课程' }}</h1>
+    <a class="btn btn-outline-secondary" href="{{ url_for('courses.list_courses') }}">返回</a>
+  </div>
+  <form method="post" class="row g-3">
+    <div class="col-md-4">
+      <label class="form-label" for="code">课程编号</label>
+      <input type="text" class="form-control" id="code" name="code" value="{{ course.code if is_edit else '' }}" required>
+    </div>
+    <div class="col-md-4">
+      <label class="form-label" for="name">课程名称</label>
+      <input type="text" class="form-control" id="name" name="name" value="{{ course.name if is_edit else '' }}" required>
+    </div>
+    <div class="col-md-4">
+      <label class="form-label" for="credit">学分</label>
+      <input type="number" step="0.5" class="form-control" id="credit" name="credit" value="{{ course.credit if is_edit else 0 }}">
+    </div>
+    <div class="col-md-6">
+      <label class="form-label" for="teacher_id">授课教师</label>
+      <select class="form-select" id="teacher_id" name="teacher_id">
+        <option value="">待定</option>
+        {% for teacher in teachers %}
+          <option value="{{ teacher.id }}" {% if is_edit and course.teacher_id == teacher.id %}selected{% endif %}>{{ teacher.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-6">
+      <label class="form-label" for="classroom_id">所属班级</label>
+      <select class="form-select" id="classroom_id" name="classroom_id">
+        <option value="">无</option>
+        {% for classroom in classes %}
+          <option value="{{ classroom.id }}" {% if is_edit and course.classroom_id == classroom.id %}selected{% endif %}>{{ classroom.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-12">
+      <label class="form-label" for="description">课程简介</label>
+      <textarea class="form-control" id="description" name="description" rows="3">{{ course.description if is_edit else '' }}</textarea>
+    </div>
+    <div class="col-12">
+      <button type="submit" class="btn btn-primary">保存</button>
+      <a class="btn btn-link" href="{{ url_for('courses.list_courses') }}">取消</a>
+    </div>
+  </form>
+{% endblock %}

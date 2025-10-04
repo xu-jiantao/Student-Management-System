@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% set is_edit = (mode == 'edit') %}
+{% block title %}{{ '编辑学生' if is_edit else '新增学生' }}{% endblock %}
+{% block content %}
+  {% if is_edit %}
+    {% set action_url = url_for('web.edit_student', student_id=student_id) %}
+  {% else %}
+    {% set action_url = url_for('web.create_student') %}
+  {% endif %}
+
+  {% macro value_for(field) -%}
+    {%- if student is mapping -%}
+      {{ student.get(field, '') }}
+    {%- else -%}
+      {{ student|attr(field) if student else '' }}
+    {%- endif -%}
+  {%- endmacro %}
+
+  {% if student is mapping %}
+    {% set dob_value = student.get('date_of_birth', '') %}
+  {% elif student and student.date_of_birth %}
+    {% set dob_value = student.date_of_birth.strftime('%Y-%m-%d') %}
+  {% else %}
+    {% set dob_value = '' %}
+  {% endif %}
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">{{ '编辑学生信息' if is_edit else '新增学生信息' }}</h1>
+    <a class="btn btn-outline-secondary" href="{{ url_for('web.list_students') }}">返回列表</a>
+  </div>
+
+  <form method="post" action="{{ action_url }}" class="row g-3">
+    <div class="col-md-6">
+      <label class="form-label" for="student_number">学号</label>
+      <input
+        type="text"
+        class="form-control"
+        id="student_number"
+        name="student_number"
+        value="{{ value_for('student_number') }}"
+        required
+      >
+    </div>
+    <div class="col-md-6">
+      <label class="form-label" for="name">姓名</label>
+      <input type="text" class="form-control" id="name" name="name" value="{{ value_for('name') }}" required>
+    </div>
+    <div class="col-md-4">
+      <label class="form-label" for="gender">性别</label>
+      <select class="form-select" id="gender" name="gender" required>
+        {% set gender_value = value_for('gender') %}
+        <option value="">请选择</option>
+        <option value="男" {{ 'selected' if gender_value == '男' else '' }}>男</option>
+        <option value="女" {{ 'selected' if gender_value == '女' else '' }}>女</option>
+      </select>
+    </div>
+    <div class="col-md-4">
+      <label class="form-label" for="date_of_birth">出生日期</label>
+      <input type="date" class="form-control" id="date_of_birth" name="date_of_birth" value="{{ dob_value }}" required>
+    </div>
+    <div class="col-md-4">
+      <label class="form-label" for="class_name">班级</label>
+      <input type="text" class="form-control" id="class_name" name="class_name" value="{{ value_for('class_name') }}" required>
+    </div>
+    <div class="col-md-6">
+      <label class="form-label" for="email">邮箱</label>
+      <input type="email" class="form-control" id="email" name="email" value="{{ value_for('email') }}" required>
+    </div>
+    <div class="col-md-6">
+      <label class="form-label" for="phone">联系电话</label>
+      <input type="text" class="form-control" id="phone" name="phone" value="{{ value_for('phone') }}" required>
+    </div>
+    <div class="col-12">
+      <label class="form-label" for="address">联系地址</label>
+      <textarea class="form-control" id="address" name="address" rows="3">{{ value_for('address') }}</textarea>
+    </div>
+    <div class="col-12">
+      <button type="submit" class="btn btn-primary">{{ '保存修改' if is_edit else '保存信息' }}</button>
+      <a class="btn btn-link" href="{{ url_for('web.list_students') }}">取消</a>
+    </div>
+  </form>
+{% endblock %}
