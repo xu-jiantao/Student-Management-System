@@ -13,7 +13,7 @@
 - **考勤与请假**：按班级/课程签到、考勤统计、学生在线请假、请假审批
 - **通知公告**：公告发布、置顶、按角色范围推送
 - **个人中心**：资料维护、头像上传、密码修改、消息中心
-- **系统设置**：用户角色分配、系统参数、数据备份（演示版生成 SQL 文件）、操作日志
+- **系统设置**：用户角色分配、系统参数、数据备份、操作日志
 - **辅助能力**：表单校验、操作日志、文件上传、批量导入导出、响应式布局、REST API 数据接口
 
 ![img.png](img.png)
@@ -42,7 +42,7 @@
 │   └── templates            # Jinja2 模板，按模块划分
 ├── config.py                # 配置（数据库、上传、Cookie 等）
 ├── db
-│   └── schema.sql           # MySQL 初始化脚本（可选执行）
+│   └── schema.sql           # MySQL 初始化脚本
 ├── requirements.txt         # Python 依赖
 └── run.py                   # 入口脚本
 ```
@@ -128,10 +128,6 @@ python run.py
 - `MAX_CONTENT_LENGTH`：上传大小限制（默认 16 MB）
 - `REMEMBER_COOKIE_DURATION`：记住登录有效期（秒）
 
-## 扩展建议
-- 引入 `Flask-Migrate` 管理结构迁移
-- 接入短信/邮件服务完成真实的密码重置通知
-- 拆分前端，使用 Vue/React + REST API 形成前后端分离模式
-- 增加更多图表（ECharts、AntV 等）与 BI 分析
-- 接入 Redis 做缓存及异步任务（批量导入、报表生成）
-- 结合 Celery/APS 实现通知推送、定时备份
+## 欢迎反馈与贡献
+如有任何建议、问题或功能需求，欢迎通过 Issue 或 Pull Request 交流。
+- 邮箱：xujiantao9510@gmail.com
