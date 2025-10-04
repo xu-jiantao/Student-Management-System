@@ -23,21 +23,21 @@
             <ul>
               {% for item in nav_menu %}
                 {% set is_active = (item.endpoint and request.endpoint == item.endpoint) %}
-                {% set child_active = false %}
+                {% set ns = namespace(child_active=is_active) %}
                 {% if item.children %}
                   {% for child in item.children %}
                     {% if request.endpoint == child.endpoint %}
-                      {% set child_active = true %}
+                      {% set ns.child_active = true %}
                     {% endif %}
                   {% endfor %}
                 {% endif %}
-                <li class="sidebar__item {% if item.children %}has-children{% endif %} {% if is_active or child_active %}active open{% endif %}">
+                <li class="sidebar__item {% if item.children %}has-children{% endif %} {% if ns.child_active %}active open{% endif %}">
                   {% if item.children %}
-                    <button class="sidebar__link" type="button" data-submenu="submenu-{{ loop.index }}">
+                    <button class="sidebar__link" type="button" data-submenu="submenu-{{ loop.index }}" aria-expanded="{{ 'true' if ns.child_active else 'false' }}">
                       <span class="sidebar__link-text">{{ item.label }}</span>
                       <span class="sidebar__caret"></span>
                     </button>
-                    <ul class="sidebar__submenu {% if child_active %}open{% endif %}" id="submenu-{{ loop.index }}">
+                    <ul class="sidebar__submenu {% if ns.child_active %}open{% endif %}" id="submenu-{{ loop.index }}">
                       {% for child in item.children %}
                         {% set is_child_active = (request.endpoint == child.endpoint) %}
                         <li>
@@ -61,7 +61,7 @@
         </aside>
         <div class="content">
           <header class="topbar">
-            <button class="topbar__toggle" id="sidebarToggle" type="button" aria-label="切换侧边栏"></button>
+            <button class="topbar__toggle" id="sidebarToggle" type="button" aria-label="切换侧边栏" aria-expanded="false"></button>
             <div class="topbar__breadcrumbs">
               {% block breadcrumbs %}{% endblock %}
             </div>
@@ -121,5 +121,21 @@
 
     <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
     {% block extra_js %}{% endblock %}
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const alerts = document.querySelectorAll('.flash-stack .alert');
+        if (!alerts.length) return;
+        setTimeout(() => {
+          alerts.forEach((alert) => {
+            alert.classList.add('alert-hide');
+            setTimeout(() => {
+              if (alert.parentElement) {
+                alert.remove();
+              }
+            }, 400);
+          });
+        }, 3800);
+      });
+    </script>
   </body>
 </html>

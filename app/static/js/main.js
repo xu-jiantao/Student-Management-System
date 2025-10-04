@@ -7,7 +7,20 @@
 
   if (toggle && sidebar) {
     toggle.addEventListener('click', function () {
-      sidebar.classList.toggle('open');
+      const isDesktop = window.matchMedia('(min-width: 1024px)').matches;
+      if (isDesktop) {
+        const hidden = document.body.classList.toggle('sidebar-hidden');
+        toggle.setAttribute('aria-expanded', String(!hidden));
+        if (hidden) {
+          sidebar.classList.remove('open');
+        }
+        return;
+      }
+
+      const expanded = toggle.getAttribute('aria-expanded') === 'true';
+      const nextState = !expanded;
+      toggle.setAttribute('aria-expanded', String(nextState));
+      sidebar.classList.toggle('open', nextState);
     });
   }
 
@@ -18,11 +31,10 @@
     if (!parent || !submenu) return;
 
     button.addEventListener('click', function () {
-      const isOpen = parent.classList.contains('open');
-      document.querySelectorAll('.sidebar__item.has-children.open').forEach((item) => {
-        if (item !== parent) item.classList.remove('open');
-      });
-      parent.classList.toggle('open', !isOpen);
+      const nextState = !parent.classList.contains('open');
+      parent.classList.toggle('open', nextState);
+      submenu.classList.toggle('open', nextState);
+      button.setAttribute('aria-expanded', String(nextState));
     });
   });
 
@@ -37,14 +49,30 @@
   document.addEventListener('click', function (event) {
     const insideSidebar = event.target.closest('.sidebar');
     const insideToggle = event.target.closest('#sidebarToggle');
-    if (!insideSidebar && !insideToggle && sidebar) {
+    const isDesktop = window.matchMedia('(min-width: 1024px)').matches;
+    if (!isDesktop && !insideSidebar && !insideToggle && sidebar) {
       sidebar.classList.remove('open');
+      if (toggle) toggle.setAttribute('aria-expanded', 'false');
     }
 
     const insideUser = event.target.closest('.topbar__user');
     if (userMenuWrapper && !insideUser) {
       userMenuWrapper.classList.remove('open');
       if (userToggle) userToggle.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  window.addEventListener('resize', function () {
+    const isDesktop = window.matchMedia('(min-width: 1024px)').matches;
+    if (isDesktop) {
+      sidebar?.classList.remove('open');
+      if (toggle) {
+        const hidden = document.body.classList.contains('sidebar-hidden');
+        toggle.setAttribute('aria-expanded', String(!hidden));
+      }
+    } else {
+      document.body.classList.remove('sidebar-hidden');
+      if (toggle) toggle.setAttribute('aria-expanded', 'false');
     }
   });
 })();

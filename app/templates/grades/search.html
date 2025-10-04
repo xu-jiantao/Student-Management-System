@@ -1,39 +1,49 @@
 {% extends "base.html" %}
 {% block title %}成绩查询{% endblock %}
 {% block content %}
-  <h1 class="h4 mb-3">成绩查询</h1>
-  <form class="row g-3 align-items-end mb-3" method="get">
-    <div class="col-md-3">
-      <label class="form-label" for="class_id">班级</label>
-      <select class="form-select" id="class_id" name="class_id">
-        <option value="">全部</option>
-        {% for classroom in classes %}
-          <option value="{{ classroom.id }}" {% if selected_class_id == classroom.id %}selected{% endif %}>{{ classroom.name }}</option>
-        {% endfor %}
-      </select>
+  <div class="page-header">
+    <div>
+      <div class="page-title">成绩查询</div>
+      <div class="page-subtitle">按班级、课程或关键字搜索历史成绩记录。</div>
     </div>
-    <div class="col-md-3">
-      <label class="form-label" for="course_id">课程</label>
-      <select class="form-select" id="course_id" name="course_id">
-        <option value="">全部</option>
-        {% for course in courses %}
-          <option value="{{ course.id }}" {% if selected_course_id == course.id %}selected{% endif %}>{{ course.name }}</option>
-        {% endfor %}
-      </select>
+  </div>
+
+  <form class="filter-panel" method="get">
+    <div class="filter-grid">
+      <div class="filter-field">
+        <label class="form-label" for="class_id">班级</label>
+        <select class="form-select" id="class_id" name="class_id">
+          <option value="">全部班级</option>
+          {% for classroom in classes %}
+            <option value="{{ classroom.id }}" {% if selected_class_id == classroom.id %}selected{% endif %}>{{ classroom.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="filter-field">
+        <label class="form-label" for="course_id">课程</label>
+        <select class="form-select" id="course_id" name="course_id">
+          <option value="">全部课程</option>
+          {% for course in courses %}
+            <option value="{{ course.id }}" {% if selected_course_id == course.id %}selected{% endif %}>{{ course.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="filter-field">
+        <label class="form-label" for="term">学期</label>
+        <input type="text" class="form-control" id="term" name="term" value="{{ term }}" placeholder="如 2023-2024 上学期">
+      </div>
+      <div class="filter-field">
+        <label class="form-label" for="q">关键字</label>
+        <input type="text" class="form-control" id="q" name="q" value="{{ keyword }}" placeholder="学生姓名/学号/课程">
+      </div>
     </div>
-    <div class="col-md-2">
-      <label class="form-label" for="term">学期</label>
-      <input type="text" class="form-control" id="term" name="term" value="{{ term }}">
-    </div>
-    <div class="col-md-2">
-      <label class="form-label" for="q">关键字</label>
-      <input type="text" class="form-control" id="q" name="q" value="{{ keyword }}">
-    </div>
-    <div class="col-md-2">
-      <button type="submit" class="btn btn-outline-primary w-100">查询</button>
+    <div class="filter-actions">
+      <button type="submit" class="btn btn-primary">搜索</button>
+      <a class="btn btn-link" href="{{ url_for('grades.search') }}">重置</a>
     </div>
   </form>
-  <div class="card shadow-sm">
+
+  <section class="card">
     <div class="table-responsive">
       <table class="table table-striped mb-0">
         <thead class="table-light">
@@ -56,5 +66,5 @@
         </tbody>
       </table>
     </div>
-  </div>
+  </section>
 {% endblock %}

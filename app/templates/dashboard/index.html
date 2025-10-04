@@ -32,9 +32,11 @@
     </div>
   </div>
 
-  <div class="card quick-actions">
-    <div class="card-header">快捷操作</div>
-    <div class="quick-actions__body">
+  <div class="dashboard-layout">
+    <div class="dashboard-main">
+      <div class="card quick-actions">
+        <div class="card-header">快捷操作</div>
+        <div class="quick-actions__body">
           {% if current_user.has_permission('students.manage') %}
             <a class="btn btn-outline-primary" href="{{ url_for('students.create_student') }}">新增学生</a>
             <a class="btn btn-outline-primary" href="{{ url_for('students.import_students') }}">批量导入学生</a>
@@ -54,64 +56,68 @@
           {% if current_user.has_permission('announcements.manage') %}
             <a class="btn btn-outline-warning" href="{{ url_for('announcements.create_announcement') }}">发布公告</a>
           {% endif %}
-    </div>
-  </div>
-
-  <div class="dashboard-grid">
-    <section class="card">
-      <div class="card-header">成绩分析</div>
-      <div class="card-body">
-          {% if grade_stats %}
-            <div class="stat-list">
-              {% for name, avg in grade_stats %}
-                {% set percent = (avg or 0) | round(1, 'floor') %}
-                <div class="stat-item">
-                  <div>
-                    <div class="label">{{ name }}</div>
-                    <div class="text-muted small">平均分</div>
-                  </div>
-                  <div class="w-100" style="padding: 0 1rem;">
-                    <div class="progress-bar">
-                      <span style="width: {{ percent }}%; background: var(--primary);"></span>
-                    </div>
-                  </div>
-                  <div class="value">{{ '%.1f'|format(avg or 0) }}</div>
-                </div>
-              {% endfor %}
-            </div>
-          {% else %}
-            <div class="text-muted">暂无成绩数据</div>
-          {% endif %}
         </div>
       </div>
-    </section>
-    <section class="card">
-      <div class="card-header">考勤统计（近30天）</div>
-      <div class="card-body">
-          {% set total_attendance = attendance_stats | map(attribute=1) | sum %}
-          {% if total_attendance %}
-            <div class="stat-list">
-              {% for status, count in attendance_stats %}
-                {% set percent = (count / total_attendance * 100) | round(1, 'floor') %}
-                <div class="stat-item">
-                  <div class="label">{{ status }}</div>
-                  <div class="w-100" style="padding: 0 1rem;">
-                    <div class="progress-bar">
-                      <span style="width: {{ percent }}%; background: {% if status == '出勤' %}var(--success){% elif status == '缺勤' %}var(--danger){% else %}var(--warning){% endif %};"></span>
+
+      <div class="dashboard-grid">
+        <section class="card">
+          <div class="card-header">成绩分析</div>
+          <div class="card-body">
+            {% if grade_stats %}
+              <div class="stat-list">
+                {% for name, avg in grade_stats %}
+                  {% set percent = (avg or 0) | round(1, 'floor') %}
+                  <div class="stat-item">
+                    <div>
+                      <div class="label">{{ name }}</div>
+                      <div class="text-muted small">平均分</div>
                     </div>
+                    <div class="w-100" style="padding: 0 1rem;">
+                      <div class="progress-bar">
+                        <span style="width: {{ percent }}%; background: var(--primary);"></span>
+                      </div>
+                    </div>
+                    <div class="value">{{ '%.1f'|format(avg or 0) }}</div>
                   </div>
-                  <div class="value">{{ percent }}%</div>
-                </div>
-              {% endfor %}
-            </div>
-          {% else %}
-            <div class="text-muted">暂无考勤记录</div>
-          {% endif %}
+                {% endfor %}
+              </div>
+            {% else %}
+              <div class="text-muted">暂无成绩数据</div>
+            {% endif %}
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-header">考勤统计（近30天）</div>
+          <div class="card-body">
+            {% set total_attendance = attendance_stats | map(attribute=1) | sum %}
+            {% if total_attendance %}
+              <div class="stat-list">
+                {% for status, count in attendance_stats %}
+                  {% set percent = (count / total_attendance * 100) | round(1, 'floor') %}
+                  <div class="stat-item">
+                    <div class="label">{{ status }}</div>
+                    <div class="w-100" style="padding: 0 1rem;">
+                      <div class="progress-bar">
+                        <span style="width: {{ percent }}%; background: {% if status == '出勤' %}var(--success){% elif status == '缺勤' %}var(--danger){% else %}var(--warning){% endif %};"></span>
+                      </div>
+                    </div>
+                    <div class="value">{{ percent }}%</div>
+                  </div>
+                {% endfor %}
+              </div>
+            {% else %}
+              <div class="text-muted">暂无考勤记录</div>
+            {% endif %}
+          </div>
+        </section>
       </div>
-    </section>
-    <section class="card">
-      <div class="card-header">个人待办</div>
-      <div class="card-body">
+    </div>
+
+    <aside class="dashboard-side">
+      <section class="card">
+        <div class="card-header">个人待办</div>
+        <div class="card-body">
           <form method="post" class="mb-3">
             <div class="input-group">
               <input type="text" class="form-control" name="content" placeholder="添加新的待办事项" required>
@@ -131,14 +137,12 @@
           {% else %}
             <div class="todo-empty">暂无待办事项</div>
           {% endif %}
-      </div>
-    </section>
-  </div>
+        </div>
+      </section>
 
-  <div class="dashboard-grid mt-3">
-    <section class="card">
-      <div class="card-header">最新公告</div>
-      <div class="card-body">
+      <section class="card">
+        <div class="card-header">最新公告</div>
+        <div class="card-body">
           {% if announcements %}
             <ul class="list-group list-group-flush">
               {% for announcement in announcements %}
@@ -154,11 +158,12 @@
           {% else %}
             <div class="text-muted">暂无公告</div>
           {% endif %}
-      </div>
-    </section>
-    <section class="card">
-      <div class="card-header">系统消息</div>
-      <div class="card-body">
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-header">系统消息</div>
+        <div class="card-body">
           {% if messages %}
             <ul class="list-group list-group-flush">
               {% for message in messages %}
@@ -172,7 +177,8 @@
           {% else %}
             <div class="message-empty">暂无新消息</div>
           {% endif %}
-      </div>
-    </section>
+        </div>
+      </section>
+    </aside>
   </div>
 {% endblock %}

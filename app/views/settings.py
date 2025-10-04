@@ -21,7 +21,13 @@ def manage_users():
     roles = Role.query.order_by(Role.name.asc()).all()
     if request.method == "POST":
         user_id = request.form.get("user_id", type=int)
-        role_ids = list(map(int, request.form.getlist("role_ids")))
+        raw_role_ids = request.form.getlist("role_ids")
+        role_ids: list[int] = []
+        for value in raw_role_ids:
+            try:
+                role_ids.append(int(value))
+            except (TypeError, ValueError):
+                continue
         user = User.query.get_or_404(user_id)
         user.roles = [Role.query.get(role_id) for role_id in role_ids if Role.query.get(role_id)]
         db.session.commit()

@@ -1,42 +1,43 @@
 {% extends "base.html" %}
 {% block title %}用户权限管理{% endblock %}
 {% block content %}
-  <h1 class="h4 mb-3">用户权限管理</h1>
-  <div class="card shadow-sm">
-    <div class="table-responsive">
-      <table class="table table-striped mb-0">
-        <thead class="table-light"><tr><th>用户名</th><th>邮箱</th><th>角色</th><th class="text-end">操作</th></tr></thead>
-        <tbody>
-          {% for user in users %}
-            <tr>
-              <td>{{ user.username }}</td>
-              <td>{{ user.email }}</td>
-              <td>{{ ', '.join(role.name for role in user.roles) if user.roles else '未分配' }}</td>
-              <td class="text-end">
-                <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#userRoles{{ user.id }}">配置角色</button>
-              </td>
-            </tr>
-            <tr class="collapse" id="userRoles{{ user.id }}">
-              <td colspan="4">
-                <form method="post" class="row g-2 align-items-center">
-                  <input type="hidden" name="user_id" value="{{ user.id }}">
-                  <div class="col-md-8">
-                    <select class="form-select" name="role_ids" multiple size="4">
-                      {% for role in roles %}
-                        <option value="{{ role.id }}" {% if role in user.roles %}selected{% endif %}>{{ role.name }}</option>
-                      {% endfor %}
-                    </select>
-                    <div class="form-text">按住 Ctrl/Command 多选角色</div>
-                  </div>
-                  <div class="col-md-4 text-end">
-                    <button type="submit" class="btn btn-primary">保存</button>
-                  </div>
-                </form>
-              </td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+  <div class="page-header">
+    <div>
+      <div class="page-title">用户权限管理</div>
+      <div class="page-subtitle">为系统用户分配角色，控制各模块的访问权。</div>
     </div>
+  </div>
+
+  <div class="user-grid">
+    {% for user in users %}
+      <section class="card user-card">
+        <div class="card-header user-card__header">
+          <div>
+            <div class="user-card__name">{{ user.username }}</div>
+            <div class="user-card__email">{{ user.email }}</div>
+          </div>
+          <span class="badge">{{ user.roles|length }} 角色</span>
+        </div>
+        <div class="card-body user-card__body">
+          <form method="post" class="user-form">
+            <input type="hidden" name="user_id" value="{{ user.id }}">
+            <div class="user-form__roles">
+              {% for role in roles %}
+                {% set checkbox_id = 'user-' ~ user.id ~ '-role-' ~ role.id %}
+                <label class="role-chip" for="{{ checkbox_id }}">
+                  <input id="{{ checkbox_id }}" type="checkbox" name="role_ids" value="{{ role.id }}" {% if role in user.roles %}checked{% endif %}>
+                  <span>{{ role.name }}</span>
+                </label>
+              {% endfor %}
+            </div>
+            <div class="user-form__actions">
+              <button type="submit" class="btn btn-primary btn-sm">保存角色</button>
+            </div>
+          </form>
+        </div>
+      </section>
+    {% else %}
+      <div class="empty-state">暂无用户信息。</div>
+    {% endfor %}
   </div>
 {% endblock %}

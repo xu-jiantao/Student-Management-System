@@ -24,7 +24,9 @@ students_bp = Blueprint("students", __name__, url_prefix="/students")
 @permission_required("students.manage")
 def list_students():
     page = request.args.get("page", default=1, type=int)
-    per_page = 15
+    per_page = request.args.get("per_page", default=15, type=int)
+    if per_page not in {10, 15, 20, 30, 50}:
+        per_page = 15
     keyword = request.args.get("q", "").strip()
     class_id = request.args.get("class_id", type=int)
     gender = request.args.get("gender", "")
